@@ -2,6 +2,24 @@ import { describe, expect, it } from 'vitest';
 import { readConfig } from './config.js';
 
 describe('readConfig', () => {
+  it('reads OpenAI provider settings with the recommended default model', () => {
+    const config = readConfig({
+      LLM_PROVIDER: 'openai',
+      OPENAI_API_KEY: 'test-openai-key',
+    });
+
+    expect(config.provider).toBe('openai');
+    expect(config.openaiApiKey).toBe('test-openai-key');
+    expect(config.openaiModel).toBe('gpt-5.4-mini');
+  });
+
+  it('requires an OpenAI key only when OpenAI is active', () => {
+    expect(() => readConfig({ LLM_PROVIDER: 'openai' })).toThrow(
+      'OPENAI_API_KEY is required when LLM_PROVIDER=openai.',
+    );
+    expect(() => readConfig({ LLM_PROVIDER: 'demo' })).not.toThrow();
+  });
+
   it('reads Groq provider settings', () => {
     const config = readConfig({
       LLM_PROVIDER: 'groq',

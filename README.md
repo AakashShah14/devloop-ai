@@ -29,13 +29,14 @@ Requirement
 - Visible score progression and a fixed stop condition
 - Review findings and applied changes for every iteration
 - Copyable final code and latest-run browser persistence
-- Groq and Gemini integrations with server-only API keys
+- OpenAI, Groq, and Gemini integrations with server-only API keys
 - Deterministic Demo mode with a reliable 58 → 76 → 91 presentation
 
 ## Tech stack
 
 - Angular 20 standalone frontend
 - Node.js 22, Express 5, and TypeScript API
+- OpenAI Structured Outputs with `gpt-5.4-mini`
 - Google Gen AI SDK (`@google/genai`)
 - Zod structured-response validation
 - Vitest/Supertest backend tests and Jasmine/Karma Angular tests
@@ -68,6 +69,8 @@ Demo mode is the default and requires no key:
 
 ```dotenv
 LLM_PROVIDER=demo
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-5.4-mini
 GEMINI_API_KEY=
 GEMINI_MODEL=gemini-2.5-flash
 GROQ_API_KEY=
@@ -76,7 +79,19 @@ PORT=3000
 CLIENT_ORIGIN=http://localhost:4200
 ```
 
-### Use Groq (recommended)
+### Use OpenAI (recommended)
+
+Create an API key in the [OpenAI Platform](https://platform.openai.com/api-keys), add API credit, and update `api/.env`:
+
+```dotenv
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_key_here
+OPENAI_MODEL=gpt-5.4-mini
+```
+
+ChatGPT subscriptions and OpenAI API billing are separate. Keep this key only in the backend environment; never add it to Angular code or commit it to Git.
+
+### Use Groq as a fallback
 
 Create an API key in [Groq Console](https://console.groq.com/keys), then update `api/.env`:
 
@@ -96,7 +111,7 @@ GEMINI_API_KEY=your_key_here
 GEMINI_MODEL=gemini-2.5-flash
 ```
 
-Restart the development command after changing environment variables. A ChatGPT Plus subscription does not include Gemini or OpenAI API usage; DevLoop’s default live integration uses a separate Gemini API key.
+Restart the development command after changing environment variables.
 
 ## Scripts
 
@@ -129,7 +144,7 @@ curl -N http://localhost:3000/api/runs \
 4. Stop at an overall score of 85 or higher.
 5. Otherwise improve and repeat, with a hard maximum of three reviewed iterations.
 
-Gemini responses are parsed and validated with Zod. A malformed structured response is retried once, then the run ends with a safe user-facing error. API keys and raw provider errors are never streamed to the browser.
+Provider responses are parsed and validated with Zod. OpenAI uses strict Structured Outputs; a schema-invalid successful response is retried once, while HTTP failures are surfaced as safe actionable messages without leaking raw provider details or API keys.
 
 ## Deploy to Render
 
@@ -138,9 +153,9 @@ The simplest deadline-safe deployment is one Render web service. Express serves 
 1. Push this repository to GitHub.
 2. In Render, choose **New → Blueprint** and connect the repository.
 3. Render detects `render.yaml` and creates `devloop-ai`.
-4. Leave `LLM_PROVIDER=demo` for the reliable judging build.
-5. For the live build, set `LLM_PROVIDER=groq`, add the secret `GROQ_API_KEY`, and use `GROQ_MODEL=openai/gpt-oss-120b` in Render.
-6. Wait for `/api/health` to report `{"status":"ok","provider":"groq"}` (or `demo`/`gemini` when using a fallback).
+4. Add the secret `OPENAI_API_KEY` in Render.
+5. Set `LLM_PROVIDER=openai` and `OPENAI_MODEL=gpt-5.4-mini`.
+6. Wait for `/api/health` to report `{"status":"ok","provider":"openai"}` (or `demo`/`groq`/`gemini` when using a fallback).
 7. Open the service URL and complete the sample run before submitting it.
 
 The build command installs locked dependencies and builds both workspaces. The start command launches the compiled Express server, which serves `web/dist/web/browser`.

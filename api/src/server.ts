@@ -3,12 +3,15 @@ import { readConfig } from './config.js';
 import { DemoProvider } from './providers/demo-provider.js';
 import { GeminiProvider } from './providers/gemini-provider.js';
 import { GroqProvider } from './providers/groq-provider.js';
+import { OpenAIProvider } from './providers/openai-provider.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const config = readConfig();
 const provider =
-  config.provider === 'gemini'
+  config.provider === 'openai'
+    ? new OpenAIProvider({ apiKey: config.openaiApiKey, model: config.openaiModel })
+    : config.provider === 'gemini'
     ? new GeminiProvider({ apiKey: config.geminiApiKey, model: config.geminiModel })
     : config.provider === 'groq'
       ? new GroqProvider({ apiKey: config.groqApiKey, model: config.groqModel })

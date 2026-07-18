@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import { requirementSchema, type RunEvent } from './domain.js';
 import { runEngineeringLoop } from './loop.js';
 import type { LoopProvider } from './providers/provider.js';
+import { OpenAIRequestError } from './providers/openai-provider.js';
 
 const writeEvent = (response: express.Response, event: RunEvent): void => {
   response.write(`event: ${event.type}\n`);
@@ -48,7 +49,9 @@ export function createApp(options: {
     } catch (error) {
       (options.onError ?? console.error)(error);
       const message =
-        error instanceof Error && error.message.includes('GEMINI_API_KEY')
+        error instanceof OpenAIRequestError
+          ? error.message
+          : error instanceof Error && error.message.includes('GEMINI_API_KEY')
           ? error.message
           : 'The engineering loop could not finish. Please retry or switch to Demo mode.';
       writeEvent(response, { type: 'error', message });

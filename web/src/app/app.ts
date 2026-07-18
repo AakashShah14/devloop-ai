@@ -48,7 +48,8 @@ export class App {
     );
   });
   protected readonly providerLabel = computed(() => {
-    const provider = this.store.result()?.provider;
+    const provider = this.store.provider();
+    if (provider === 'openai') return 'OpenAI live';
     if (provider === 'groq') return 'Groq live';
     if (provider === 'gemini') return 'Gemini live';
     return 'Demo mode';

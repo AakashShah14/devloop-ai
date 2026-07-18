@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp } from './app.js';
 import { DemoProvider } from './providers/demo-provider.js';
+import { OpenAIRequestError } from './providers/openai-provider.js';
 import type { LoopProvider } from './providers/provider.js';
 
 const app = createApp({
@@ -61,6 +62,32 @@ describe('DevLoop API', () => {
     });
 
     expect(onError).toHaveBeenCalledWith(providerError);
+  });
+
+  it('streams a safe actionable OpenAI provider error', async () => {
+    const providerError = new OpenAIRequestError(
+      429,
+      'OpenAI is temporarily rate-limited. Please wait a moment and retry.',
+    );
+    const failingProvider: LoopProvider = {
+      name: 'openai',
+      plan: async () => Promise.reject(providerError),
+      generate: async () => Promise.reject(providerError),
+      review: async () => Promise.reject(providerError),
+      improve: async () => Promise.reject(providerError),
+    };
+    const failingApp = createApp({
+      provider: failingProvider,
+      clientOrigin: 'http://localhost:4200',
+      onError: () => undefined,
+    });
+
+    const response = await request(failingApp).post('/api/runs').send({
+      requirement: 'Create a Python project with pytest configuration',
+    });
+
+    expect(response.text).toContain('OpenAI is temporarily rate-limited');
+    expect(response.text).not.toContain('OPENAI_API_KEY');
   });
 
   it('serves the Angular app when a production build path is provided', async () => {

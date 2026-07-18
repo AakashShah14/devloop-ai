@@ -8,13 +8,15 @@ export interface QualityScores {
   overall: number;
 }
 
+export type ProviderName = 'demo' | 'gemini' | 'groq' | 'openai';
+
 export interface PlanResult { summary: string; steps: string[]; }
 export interface GenerationResult { code: string; language: string; changes: string[]; }
 export interface ReviewResult { scores: QualityScores; findings: string[]; }
 export interface Iteration extends GenerationResult, ReviewResult { number: number; }
 export interface RunResult {
   requirement: string;
-  provider: 'demo' | 'gemini' | 'groq';
+  provider: ProviderName;
   plan: PlanResult;
   iterations: Iteration[];
   completedAt: string;

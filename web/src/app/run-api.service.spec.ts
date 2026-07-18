@@ -12,6 +12,18 @@ describe('RunApiService', () => {
 
   afterEach(() => jasmine.getEnv().allowRespy(true));
 
+  it('reads the active provider from the health endpoint', async () => {
+    spyOn(window, 'fetch').and.resolveTo(
+      new Response(JSON.stringify({ status: 'ok', provider: 'openai' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    await expectAsync(service.getProvider()).toBeResolvedTo('openai');
+    expect(window.fetch).toHaveBeenCalledWith('/api/health');
+  });
+
   it('reconstructs SSE records split across response chunks', async () => {
     const encoder = new TextEncoder();
     const chunks = [

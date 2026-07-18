@@ -29,11 +29,12 @@ describe('App', () => {
   const plan = signal<{ summary: string; steps: string[] } | null>(null);
   const iterations = signal<Iteration[]>([]);
   const result = signal<RunResult | null>(null);
+  const provider = signal<'demo' | 'gemini' | 'groq' | 'openai'>('demo');
   const error = signal('');
   const loading = signal(false);
   const start = jasmine.createSpy('start');
   const reset = jasmine.createSpy('reset');
-  const store = { stage, message, plan, iterations, result, error, loading, start, reset };
+  const store = { stage, message, plan, iterations, result, provider, error, loading, start, reset };
 
   beforeEach(async () => {
     stage.set('idle');
@@ -41,6 +42,7 @@ describe('App', () => {
     plan.set(null);
     iterations.set([]);
     result.set(null);
+    provider.set('demo');
     error.set('');
     loading.set(false);
     start.calls.reset();
@@ -118,6 +120,7 @@ describe('App', () => {
   });
 
   it('identifies a completed Groq run', () => {
+    provider.set('groq');
     result.set({
       requirement: 'Create a Python project with pytest configuration',
       provider: 'groq',
@@ -129,6 +132,31 @@ describe('App', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Groq live');
+  });
+
+  it('shows the active OpenAI provider before the first run', () => {
+    provider.set('openai');
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('OpenAI live');
+    expect(fixture.nativeElement.textContent).not.toContain('Demo mode');
+  });
+
+  it('prefers current backend health over a restored run provider', () => {
+    provider.set('openai');
+    result.set({
+      requirement: 'Create a Python project with pytest configuration',
+      provider: 'groq',
+      plan: { summary: 'Create the project', steps: ['Add files'] },
+      iterations: [iteration],
+      completedAt: '2026-07-19T00:00:00.000Z',
+    });
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('OpenAI live');
+    expect(fixture.nativeElement.textContent).not.toContain('Groq live');
   });
 
   it('selects the newest iteration by default', () => {

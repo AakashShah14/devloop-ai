@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import type { Iteration, PlanResult, RunEvent, RunResult, RunStage } from './models';
+import type { Iteration, PlanResult, ProviderName, RunEvent, RunResult, RunStage } from './models';
 import { RunApiService } from './run-api.service';
 
 const STORAGE_KEY = 'devloop.latest-run';
@@ -12,6 +12,7 @@ export class RunStore {
   private readonly planState = signal<PlanResult | null>(null);
   private readonly iterationsState = signal<Iteration[]>([]);
   private readonly resultState = signal<RunResult | null>(null);
+  private readonly providerState = signal<ProviderName>('demo');
   private readonly errorState = signal('');
 
   readonly stage = this.stageState.asReadonly();
@@ -19,12 +20,14 @@ export class RunStore {
   readonly plan = this.planState.asReadonly();
   readonly iterations = this.iterationsState.asReadonly();
   readonly result = this.resultState.asReadonly();
+  readonly provider = this.providerState.asReadonly();
   readonly error = this.errorState.asReadonly();
   readonly loading = computed(() => !['idle', 'complete', 'failed'].includes(this.stageState()));
   readonly latestIteration = computed(() => this.iterationsState().at(-1) ?? null);
 
   constructor() {
     this.restore();
+    void this.loadProvider();
   }
 
   start(requirement: string): void {
@@ -70,6 +73,7 @@ export class RunStore {
         break;
       case 'complete':
         this.resultState.set(event.result);
+        this.providerState.set(event.result.provider);
         this.planState.set(event.result.plan);
         this.iterationsState.set(event.result.iterations);
         this.stageState.set('complete');
@@ -90,12 +94,21 @@ export class RunStore {
       const result = JSON.parse(stored) as RunResult;
       if (!result.requirement || !Array.isArray(result.iterations)) return;
       this.resultState.set(result);
+      this.providerState.set(result.provider);
       this.planState.set(result.plan);
       this.iterationsState.set(result.iterations);
       this.stageState.set('complete');
       this.messageState.set('Restored your latest engineering loop');
     } catch {
       localStorage.removeItem(STORAGE_KEY);
+    }
+  }
+
+  private async loadProvider(): Promise<void> {
+    try {
+      this.providerState.set(await this.api.getProvider());
+    } catch {
+      // Keep the safe demo fallback when health status is temporarily unavailable.
     }
   }
 }

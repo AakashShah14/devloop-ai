@@ -1,9 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import type { RunEvent } from './models';
+import type { ProviderName, RunEvent } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class RunApiService {
+  async getProvider(): Promise<ProviderName> {
+    const response = await fetch('/api/health');
+    if (!response.ok) throw new Error('Unable to read provider status.');
+
+    const body = (await response.json()) as { provider?: unknown };
+    return body.provider === 'openai' ||
+      body.provider === 'groq' ||
+      body.provider === 'gemini' ||
+      body.provider === 'demo'
+      ? body.provider
+      : 'demo';
+  }
+
   streamRun(requirement: string): Observable<RunEvent> {
     return new Observable<RunEvent>((observer) => {
       const controller = new AbortController();

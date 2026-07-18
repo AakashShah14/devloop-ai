@@ -10,8 +10,8 @@ services:
       - key: NODE_VERSION
         value: 22.22.0
       - key: LLM_PROVIDER
-        value: groq
-      - key: GROQ_MODEL
-        value: openai/gpt-oss-120b
-      - key: GROQ_API_KEY
+        value: openai
+      - key: OPENAI_MODEL
+        value: gpt-5.4-mini
+      - key: OPENAI_API_KEY
         sync: false

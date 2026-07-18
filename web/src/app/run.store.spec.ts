@@ -31,10 +31,22 @@ describe('RunStore', () => {
     TestBed.configureTestingModule({
       providers: [
         RunStore,
-        { provide: RunApiService, useValue: { streamRun: () => events.asObservable() } },
+        {
+          provide: RunApiService,
+          useValue: {
+            getProvider: () => Promise.resolve('openai'),
+            streamRun: () => events.asObservable(),
+          },
+        },
       ],
     });
     store = TestBed.inject(RunStore);
+  });
+
+  it('loads the active backend provider before a run completes', async () => {
+    await new Promise((resolve) => window.setTimeout(resolve));
+
+    expect(store.provider()).toBe('openai');
   });
 
   it('starts idle and applies streamed stage and iteration events', () => {
@@ -72,7 +84,16 @@ describe('RunStore', () => {
 
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      providers: [RunStore, { provide: RunApiService, useValue: { streamRun: () => events } }],
+      providers: [
+        RunStore,
+        {
+          provide: RunApiService,
+          useValue: {
+            getProvider: () => Promise.resolve('demo'),
+            streamRun: () => events,
+          },
+        },
+      ],
     });
     const restored = TestBed.inject(RunStore);
 

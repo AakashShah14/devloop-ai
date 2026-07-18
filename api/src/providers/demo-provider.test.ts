@@ -3,6 +3,31 @@ import { runEngineeringLoop } from '../loop.js';
 import { DemoProvider } from './demo-provider.js';
 
 describe('DemoProvider', () => {
+  it('uses injected pacing before each visible provider operation', async () => {
+    let pauses = 0;
+    const provider = new DemoProvider(async () => {
+      pauses += 1;
+    });
+
+    const plan = await provider.plan('Build an accessible Angular login component');
+    const generated = await provider.generate('Build an accessible Angular login component', plan);
+    const review = await provider.review(
+      'Build an accessible Angular login component',
+      plan,
+      generated.code,
+      1,
+    );
+    await provider.improve(
+      'Build an accessible Angular login component',
+      plan,
+      generated.code,
+      review,
+      2,
+    );
+
+    expect(pauses).toBe(4);
+  });
+
   it('produces a deterministic three-step quality progression', async () => {
     const requirement = 'Create an Angular login component with validation and accessibility';
 

@@ -152,7 +152,10 @@ const changes = [
 export class DemoProvider implements LoopProvider {
   readonly name = 'demo' as const;
 
-  async plan(): Promise<PlanResult> {
+  constructor(private readonly pause: () => Promise<void> = () => Promise.resolve()) {}
+
+  async plan(_requirement: string): Promise<PlanResult> {
+    await this.pause();
     return {
       summary: 'Build a secure, accessible Angular login flow with explicit async states.',
       steps: [
@@ -164,7 +167,8 @@ export class DemoProvider implements LoopProvider {
     };
   }
 
-  async generate(): Promise<GenerationResult> {
+  async generate(_requirement: string, _plan: PlanResult): Promise<GenerationResult> {
+    await this.pause();
     return { code: codeVersions[0], language: 'typescript', changes: changes[0] };
   }
 
@@ -174,6 +178,7 @@ export class DemoProvider implements LoopProvider {
     _code: string,
     iteration: number,
   ): Promise<ReviewResult> {
+    await this.pause();
     return reviews[Math.min(iteration - 1, reviews.length - 1)];
   }
 
@@ -184,6 +189,7 @@ export class DemoProvider implements LoopProvider {
     _review: ReviewResult,
     nextIteration: number,
   ): Promise<GenerationResult> {
+    await this.pause();
     const index = Math.min(nextIteration - 1, codeVersions.length - 1);
     return { code: codeVersions[index], language: 'typescript', changes: changes[index] };
   }

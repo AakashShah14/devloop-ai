@@ -14,6 +14,7 @@ export function createApp(options: {
   provider: LoopProvider;
   clientOrigin: string;
   webDistPath?: string;
+  onError?: (error: unknown) => void;
 }) {
   const app = express();
   app.disable('x-powered-by');
@@ -45,6 +46,7 @@ export function createApp(options: {
         emit: (event) => writeEvent(response, event),
       });
     } catch (error) {
+      (options.onError ?? console.error)(error);
       const message =
         error instanceof Error && error.message.includes('GEMINI_API_KEY')
           ? error.message

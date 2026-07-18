@@ -65,6 +65,17 @@ describe('App', () => {
     expect(text).toContain('Improving');
   });
 
+  it('renders the DevLoop symbol with the accessible HTML wordmark', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const symbol = root.querySelector('.brand-symbol') as HTMLImageElement | null;
+
+    expect(symbol?.getAttribute('src')).toBe('/branding/devloop-symbol.png');
+    expect(symbol?.getAttribute('alt')).toBe('');
+    expect(root.querySelector('.brand')?.textContent).toContain('DevLoop AI');
+  });
+
   it('loads the sample requirement and enables the run button', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();

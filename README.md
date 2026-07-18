@@ -1,5 +1,7 @@
 # DevLoop AI
 
+<p align="center"><img src="web/public/branding/devloop-symbol.png" alt="DevLoop AI loop symbol" width="144"></p>
+
 **The first answer is just the beginning.**
 
 DevLoop AI is a hackathon MVP that demonstrates loop engineering. Instead of returning the first generated solution, it plans the work, builds code, reviews it across six quality dimensions, applies the findings, and repeats until the quality score reaches 85 or the third iteration is reviewed.

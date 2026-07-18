@@ -7,8 +7,7 @@
 .topbar { width: min(1180px, calc(100% - 40px)); margin: 0 auto; height: 78px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
 .brand { color: var(--text); text-decoration: none; font-size: 18px; letter-spacing: -.03em; display: flex; gap: 10px; align-items: center; }
 .brand strong { color: var(--cyan); }
-.brand-mark { width: 28px; height: 28px; border: 1px solid #5ae6f6; border-radius: 9px; display: grid; place-items: center; transform: rotate(45deg); box-shadow: 0 0 22px rgba(47,216,235,.25); }
-.brand-mark span { width: 8px; height: 8px; border: 2px solid var(--cyan); border-radius: 2px; }
+.brand-symbol { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; box-shadow: 0 0 24px rgba(47,216,235,.22); }
 .topbar-actions { display: flex; gap: 20px; align-items: center; font-size: 13px; }
 .mode-badge { display: flex; align-items: center; gap: 7px; color: #b8c3dd; background: rgba(13,25,48,.72); border: 1px solid var(--line); padding: 8px 11px; border-radius: 999px; }
 .mode-badge i, .status-copy i { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); }

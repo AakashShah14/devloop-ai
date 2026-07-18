@@ -1,0 +1,24 @@
+{
+  "name": "devloop-ai",
+  "version": "1.0.0",
+  "description": "An iterative AI engineering loop for hackathon demos",
+  "private": true,
+  "workspaces": [
+    "api",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev --workspace api\" \"npm start --workspace web\"",
+    "test": "npm test --workspace api && npm test --workspace web -- --watch=false --browsers=ChromeHeadless",
+    "build": "npm run build --workspace api && npm run build --workspace web"
+  },
+  "keywords": [
+    "angular",
+    "gemini",
+    "loop-engineering"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

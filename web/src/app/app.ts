@@ -20,7 +20,7 @@ const STAGE_INDEX: Partial<Record<RunStage, number>> = {
 export class App {
   protected readonly store = inject(RunStore);
   protected readonly requirement = new FormControl('', { nonNullable: true });
-  protected readonly selectedNumber = signal(1);
+  protected readonly selectedNumber = signal(0);
   protected readonly copied = signal(false);
   protected readonly sampleRequirement =
     'Create an Angular login component with validation, accessibility, loading state, and error handling.';
@@ -58,7 +58,7 @@ export class App {
   protected run(): void {
     const requirement = this.requirement.value.trim();
     if (requirement.length < 10 || this.store.loading()) return;
-    this.selectedNumber.set(1);
+    this.selectedNumber.set(0);
     this.store.start(requirement);
   }
 
@@ -78,7 +78,7 @@ export class App {
   protected newRun(): void {
     this.store.reset();
     this.requirement.setValue('');
-    this.selectedNumber.set(1);
+    this.selectedNumber.set(0);
   }
 
   protected stageStatus(id: keyof typeof STAGE_INDEX): 'pending' | 'active' | 'done' {

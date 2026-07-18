@@ -79,6 +79,22 @@ describe('App', () => {
     expect(runButton.disabled).toBe(false);
   });
 
+  it('prevents native form navigation when starting a run', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    (root.querySelector('[data-testid="sample-button"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    const submit = new Event('submit', { bubbles: true, cancelable: true });
+
+    (root.querySelector('form') as HTMLFormElement).dispatchEvent(submit);
+
+    expect(submit.defaultPrevented).toBe(true);
+    expect(start).toHaveBeenCalledWith(
+      'Create an Angular login component with validation, accessibility, loading state, and error handling.',
+    );
+  });
+
   it('renders iteration code and the overall score', () => {
     iterations.set([iteration]);
     const fixture = TestBed.createComponent(App);
@@ -88,6 +104,26 @@ describe('App', () => {
     expect(text).toContain('Iteration 1');
     expect(text).toContain('91');
     expect(text).toContain('@Component');
+  });
+
+  it('selects the newest iteration by default', () => {
+    iterations.set([
+      iteration,
+      {
+        ...iteration,
+        number: 2,
+        code: '@Component({}) export class FinalLogin {}',
+        scores: { ...scoreSet, overall: 95 },
+      },
+    ]);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('code')?.textContent).toContain('FinalLogin');
+    expect(root.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain(
+      'Iteration 2',
+    );
   });
 
   it('surfaces terminal errors accessibly', () => {

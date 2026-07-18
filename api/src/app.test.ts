@@ -1,5 +1,8 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
+import { mkdtemp, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createApp } from './app.js';
 import { DemoProvider } from './providers/demo-provider.js';
 
@@ -34,5 +37,20 @@ describe('DevLoop API', () => {
     expect(response.text).toContain('event: iteration');
     expect(response.text).toContain('event: complete');
     expect((response.text.match(/event: iteration/g) ?? [])).toHaveLength(3);
+  });
+
+  it('serves the Angular app when a production build path is provided', async () => {
+    const webDistPath = await mkdtemp(join(tmpdir(), 'devloop-web-'));
+    await writeFile(join(webDistPath, 'index.html'), '<main>DevLoop production app</main>');
+    const productionApp = createApp({
+      provider: new DemoProvider(),
+      clientOrigin: 'https://devloop.example',
+      webDistPath,
+    });
+
+    const response = await request(productionApp).get('/');
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('DevLoop production app');
   });
 });

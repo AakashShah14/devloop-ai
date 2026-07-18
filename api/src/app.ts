@@ -10,7 +10,11 @@ const writeEvent = (response: express.Response, event: RunEvent): void => {
   response.write(`data: ${JSON.stringify(event)}\n\n`);
 };
 
-export function createApp(options: { provider: LoopProvider; clientOrigin: string }) {
+export function createApp(options: {
+  provider: LoopProvider;
+  clientOrigin: string;
+  webDistPath?: string;
+}) {
   const app = express();
   app.disable('x-powered-by');
   app.use(helmet());
@@ -50,6 +54,17 @@ export function createApp(options: { provider: LoopProvider; clientOrigin: strin
       response.end();
     }
   });
+
+  if (options.webDistPath) {
+    app.use(express.static(options.webDistPath));
+    app.use((request, response, next) => {
+      if (request.method !== 'GET' || request.path.startsWith('/api/')) {
+        next();
+        return;
+      }
+      response.sendFile('index.html', { root: options.webDistPath });
+    });
+  }
 
   return app;
 }

@@ -9,7 +9,6 @@
     </a>
     <div class="topbar-actions">
       <span class="mode-badge"><i></i>{{ providerLabel() }}</span>
-      <a class="github-link" href="https://github.com" target="_blank" rel="noreferrer">Source ↗</a>
     </div>
   </header>
 
@@ -21,7 +20,7 @@
         DevLoop plans, builds, reviews, and improves code until it clears a measurable quality bar—so you can see AI engineering, not just AI generation.
       </p>
 
-      <form class="composer" (ngSubmit)="run()">
+      <form class="composer" (submit)="run(); $event.preventDefault()">
         <div class="composer-head">
           <label for="requirement">What should we engineer?</label>
           <button data-testid="sample-button" type="button" class="text-button" (click)="useSample()">
@@ -107,7 +106,7 @@
             <span class="section-kicker">QUALITY PROGRESSION</span>
             <div class="progression">
               @for (item of store.iterations(); track trackIteration($index, item); let last = $last) {
-                <button type="button" (click)="selectIteration(item.number)" [class.selected]="selectedNumber() === item.number">
+                <button type="button" (click)="selectIteration(item.number)" [class.selected]="selectedIteration()?.number === item.number">
                   <span>V{{ item.number }}</span><strong>{{ item.scores.overall }}</strong>
                 </button>
                 @if (!last) { <span class="progress-arrow">→</span> }
@@ -138,8 +137,8 @@
                 <button
                   type="button"
                   role="tab"
-                  [attr.aria-selected]="selectedNumber() === item.number"
-                  [class.active]="selectedNumber() === item.number"
+                  [attr.aria-selected]="selectedIteration()?.number === item.number"
+                  [class.active]="selectedIteration()?.number === item.number"
                   (click)="selectIteration(item.number)"
                 >Iteration {{ item.number }}</button>
               }

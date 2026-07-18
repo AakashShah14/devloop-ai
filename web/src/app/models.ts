@@ -14,7 +14,7 @@ export interface ReviewResult { scores: QualityScores; findings: string[]; }
 export interface Iteration extends GenerationResult, ReviewResult { number: number; }
 export interface RunResult {
   requirement: string;
-  provider: 'demo' | 'gemini';
+  provider: 'demo' | 'gemini' | 'groq';
   plan: PlanResult;
   iterations: Iteration[];
   completedAt: string;

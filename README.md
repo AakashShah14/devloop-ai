@@ -27,7 +27,7 @@ Requirement
 - Visible score progression and a fixed stop condition
 - Review findings and applied changes for every iteration
 - Copyable final code and latest-run browser persistence
-- Gemini integration with a server-only API key
+- Groq and Gemini integrations with server-only API keys
 - Deterministic Demo mode with a reliable 58 → 76 → 91 presentation
 
 ## Tech stack
@@ -68,11 +68,23 @@ Demo mode is the default and requires no key:
 LLM_PROVIDER=demo
 GEMINI_API_KEY=
 GEMINI_MODEL=gemini-2.5-flash
+GROQ_API_KEY=
+GROQ_MODEL=openai/gpt-oss-120b
 PORT=3000
 CLIENT_ORIGIN=http://localhost:4200
 ```
 
-### Use Gemini
+### Use Groq (recommended)
+
+Create an API key in [Groq Console](https://console.groq.com/keys), then update `api/.env`:
+
+```dotenv
+LLM_PROVIDER=groq
+GROQ_API_KEY=your_key_here
+GROQ_MODEL=openai/gpt-oss-120b
+```
+
+### Use Gemini as a fallback
 
 Create an API key in [Google AI Studio](https://aistudio.google.com/apikey), then update `api/.env`:
 
@@ -125,8 +137,8 @@ The simplest deadline-safe deployment is one Render web service. Express serves 
 2. In Render, choose **New → Blueprint** and connect the repository.
 3. Render detects `render.yaml` and creates `devloop-ai`.
 4. Leave `LLM_PROVIDER=demo` for the reliable judging build.
-5. To enable Gemini, set `LLM_PROVIDER=gemini` and add the secret `GEMINI_API_KEY` in Render.
-6. Wait for `/api/health` to report `{"status":"ok","provider":"demo"}` or `gemini`.
+5. For the live build, set `LLM_PROVIDER=groq`, add the secret `GROQ_API_KEY`, and use `GROQ_MODEL=openai/gpt-oss-120b` in Render.
+6. Wait for `/api/health` to report `{"status":"ok","provider":"groq"}` (or `demo`/`gemini` when using a fallback).
 7. Open the service URL and complete the sample run before submitting it.
 
 The build command installs locked dependencies and builds both workspaces. The start command launches the compiled Express server, which serves `web/dist/web/browser`.

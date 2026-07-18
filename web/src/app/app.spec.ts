@@ -106,6 +106,20 @@ describe('App', () => {
     expect(text).toContain('@Component');
   });
 
+  it('identifies a completed Groq run', () => {
+    result.set({
+      requirement: 'Create a Python project with pytest configuration',
+      provider: 'groq',
+      plan: { summary: 'Create the project', steps: ['Add files'] },
+      iterations: [iteration],
+      completedAt: '2026-07-19T00:00:00.000Z',
+    });
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Groq live');
+  });
+
   it('selects the newest iteration by default', () => {
     iterations.set([
       iteration,

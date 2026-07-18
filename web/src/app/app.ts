@@ -47,9 +47,12 @@ export class App {
       null
     );
   });
-  protected readonly providerLabel = computed(() =>
-    this.store.result()?.provider === 'gemini' ? 'Gemini live' : 'Demo mode',
-  );
+  protected readonly providerLabel = computed(() => {
+    const provider = this.store.result()?.provider;
+    if (provider === 'groq') return 'Groq live';
+    if (provider === 'gemini') return 'Gemini live';
+    return 'Demo mode';
+  });
 
   protected useSample(): void {
     this.requirement.setValue(this.sampleRequirement);

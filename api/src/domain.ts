@@ -39,7 +39,7 @@ export interface Iteration extends GenerationResult, ReviewResult {
 
 export interface RunResult {
   requirement: string;
-  provider: 'demo' | 'gemini';
+  provider: 'demo' | 'gemini' | 'groq';
   plan: PlanResult;
   iterations: Iteration[];
   completedAt: string;

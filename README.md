@@ -13,6 +13,10 @@ DevLoop AI is a hackathon MVP that demonstrates loop engineering. Instead of ret
 - **Pitch deck:** [Open the six-slide PDF](https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Pitch-Deck.pdf)
 - **Editable deck:** [Download the PowerPoint](https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Pitch-Deck.pptx)
 
+## Built with OpenAI Codex
+
+DevLoop AI was built end to end with OpenAI Codex—including product planning, Angular and Node.js implementation, tests, debugging, deployment configuration, documentation, the pitch deck, and the narrated demo video. Only security-sensitive account actions, such as creating the API key and entering secrets, were completed manually.
+
 ## Why it exists
 
 AI-generated code can look convincing while missing requirements, accessibility, safe error handling, or maintainability. DevLoop makes those gaps visible and shows how a controlled review-and-improve loop can produce a stronger result.

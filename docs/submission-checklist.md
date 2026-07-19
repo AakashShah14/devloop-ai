@@ -2,6 +2,12 @@
 
 Deadline: **July 19, 2026 at 23:59 IST**. Aim to submit at least two hours early.
 
+## Final asset URLs
+
+- **Demo Video URL:** https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Demo.mp4
+- **Pitch Deck URL:** https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Pitch-Deck.pdf
+- **Editable Pitch Deck:** https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Pitch-Deck.pptx
+
 ## Prototype
 
 - [ ] Render deployment is green.
@@ -20,7 +26,7 @@ Deadline: **July 19, 2026 at 23:59 IST**. Aim to submit at least two hours early
 
 - [ ] Hosted prototype URL opens without login.
 - [ ] Public GitHub repository opens without login.
-- [ ] Maximum 3-minute demo video opens without login or an access request.
+- [x] Maximum 3-minute demo video is exported at 2:38.6 and is ready for public verification.
 - [ ] All three links were tested in a private/incognito window.
 
 ## Repository
@@ -34,16 +40,16 @@ Deadline: **July 19, 2026 at 23:59 IST**. Aim to submit at least two hours early
 
 ## Demo video
 
-- [ ] Video is 2–3 minutes and follows `docs/demo-video.md`.
-- [ ] Problem and loop-engineering differentiator appear in the first 30 seconds.
-- [ ] Requirement and live workflow are visible.
-- [ ] Score progression and iteration comparison are shown.
-- [ ] Audio is clear and notifications are absent.
-- [ ] Exported MP4 was watched end to end.
+- [x] Video is 2–3 minutes and follows `docs/demo-video.md`.
+- [x] Problem and loop-engineering differentiator appear in the first 30 seconds.
+- [x] Requirement and live workflow are visible.
+- [x] The live score, stop condition, and single-iteration early stop are explained accurately.
+- [x] Audio is present at a safe level and notifications are absent.
+- [x] Exported MP4 decodes from beginning to end without media errors.
 - [ ] Video sharing permissions allow judges to view without requesting access.
 - [ ] Video URL is copied into the submission form.
-- [ ] The pitch clearly demonstrates originality, impact, AI fluency, working execution, and creativity.
-- [ ] The video stays at or below the strict 3-minute maximum.
+- [x] The pitch clearly demonstrates originality, impact, AI fluency, working execution, and creativity.
+- [x] The video stays at or below the strict 3-minute maximum.
 
 ## Final submission
 

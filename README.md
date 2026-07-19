@@ -6,6 +6,13 @@
 
 DevLoop AI is a hackathon MVP that demonstrates loop engineering. Instead of returning the first generated solution, it plans the work, builds code, reviews it across six quality dimensions, applies the findings, and repeats until the quality score reaches 85 or the third iteration is reviewed.
 
+## Submission links
+
+- **Live prototype:** [devloop-ai.onrender.com](https://devloop-ai.onrender.com/)
+- **Demo video:** [Watch the 2:38 narrated demo](https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Demo.mp4)
+- **Pitch deck:** [Open the six-slide PDF](https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Pitch-Deck.pdf)
+- **Editable deck:** [Download the PowerPoint](https://raw.githubusercontent.com/AakashShah14/devloop-ai/master/submission/DevLoop-AI-Pitch-Deck.pptx)
+
 ## Why it exists
 
 AI-generated code can look convincing while missing requirements, accessibility, safe error handling, or maintainability. DevLoop makes those gaps visible and shows how a controlled review-and-improve loop can produce a stronger result.

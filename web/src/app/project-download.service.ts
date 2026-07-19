@@ -27,8 +27,10 @@ export class ProjectDownloadService {
     const anchor = document.createElement('a');
     anchor.href = url;
     anchor.download = this.archiveName(requirement, iteration);
+    document.body.appendChild(anchor);
     anchor.click();
-    URL.revokeObjectURL(url);
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url));
   }
 
   private assertSafeFiles(files: ProjectFile[]): void {

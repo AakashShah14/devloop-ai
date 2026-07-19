@@ -45,4 +45,22 @@ describe('ProjectDownloadService', () => {
       ]),
     ).toBeRejectedWithError('Invalid project file manifest.');
   });
+
+  it('uses a mounted download link and revokes the object URL after the click', async () => {
+    spyOn(URL, 'createObjectURL').and.returnValue('blob:devloop-test');
+    const revoke = spyOn(URL, 'revokeObjectURL');
+    const click = spyOn(HTMLAnchorElement.prototype, 'click');
+
+    await service.download(
+      [{ path: 'src/main.py', content: 'print("hello")' }],
+      'Set up a Python project',
+      1,
+    );
+
+    expect(click).toHaveBeenCalled();
+    expect(document.querySelector('a[download]')).toBeNull();
+    expect(revoke).not.toHaveBeenCalled();
+    await new Promise((resolve) => window.setTimeout(resolve));
+    expect(revoke).toHaveBeenCalledWith('blob:devloop-test');
+  });
 });

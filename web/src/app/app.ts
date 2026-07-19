@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import type { QualityScores, RunStage } from './models';
+import { ProjectDownloadService } from './project-download.service';
 import { RunStore } from './run.store';
 
 const STAGE_INDEX: Partial<Record<RunStage, number>> = {
@@ -22,6 +23,8 @@ export class App {
   protected readonly requirement = new FormControl('', { nonNullable: true });
   protected readonly selectedNumber = signal(0);
   protected readonly copied = signal(false);
+  protected readonly downloadError = signal('');
+  private readonly projectDownload = inject(ProjectDownloadService);
   protected readonly sampleRequirement =
     'Create an Angular login component with validation, accessibility, loading state, and error handling.';
   protected readonly stages = [
@@ -54,6 +57,14 @@ export class App {
     if (provider === 'gemini') return 'Gemini live';
     return 'Demo mode';
   });
+  protected readonly previewLabel = computed(() => {
+    const iteration = this.selectedIteration();
+    const matchingFile = iteration?.files?.find((file) => file.content.trim() === iteration.code.trim());
+    if (matchingFile) return matchingFile.path;
+    const language = iteration?.language.trim();
+    if (!language) return 'Code preview';
+    return `${language.charAt(0).toUpperCase()}${language.slice(1)} preview`;
+  });
 
   protected useSample(): void {
     this.requirement.setValue(this.sampleRequirement);
@@ -69,6 +80,7 @@ export class App {
   protected selectIteration(number: number): void {
     this.selectedNumber.set(number);
     this.copied.set(false);
+    this.downloadError.set('');
   }
 
   protected async copyCode(): Promise<void> {
@@ -83,6 +95,21 @@ export class App {
     this.store.reset();
     this.requirement.setValue('');
     this.selectedNumber.set(0);
+    this.downloadError.set('');
+  }
+
+  protected async downloadProject(): Promise<void> {
+    const iteration = this.selectedIteration();
+    const requirement = this.store.result()?.requirement ?? this.requirement.value.trim();
+    if (!iteration?.files?.length) return;
+    this.downloadError.set('');
+    try {
+      await this.projectDownload.download(iteration.files, requirement, iteration.number);
+    } catch {
+      this.downloadError.set(
+        'Could not create the project ZIP. Your generated code is still available above.',
+      );
+    }
   }
 
   protected stageStatus(id: keyof typeof STAGE_INDEX): 'pending' | 'active' | 'done' {

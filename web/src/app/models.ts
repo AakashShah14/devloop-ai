@@ -11,7 +11,13 @@ export interface QualityScores {
 export type ProviderName = 'demo' | 'gemini' | 'groq' | 'openai';
 
 export interface PlanResult { summary: string; steps: string[]; }
-export interface GenerationResult { code: string; language: string; changes: string[]; }
+export interface ProjectFile { path: string; content: string; }
+export interface GenerationResult {
+  code: string;
+  language: string;
+  changes: string[];
+  files?: ProjectFile[];
+}
 export interface ReviewResult { scores: QualityScores; findings: string[]; }
 export interface Iteration extends GenerationResult, ReviewResult { number: number; }
 export interface RunResult {

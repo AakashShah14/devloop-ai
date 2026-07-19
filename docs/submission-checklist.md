@@ -13,6 +13,15 @@ Deadline: **July 19, 2026 at 23:59 IST**. Aim to submit at least two hours early
 - [ ] Copy code and New run controls work.
 - [ ] Refresh restores the latest completed run.
 - [ ] Narrow/mobile layout remains usable.
+- [ ] A live OpenAI scaffold prompt shows the correct language/file label and downloads a ZIP.
+- [ ] The ZIP opens and contains packaging, source, tests, and README files.
+
+## Mandatory public links
+
+- [ ] Hosted prototype URL opens without login.
+- [ ] Public GitHub repository opens without login.
+- [ ] Maximum 3-minute demo video opens without login or an access request.
+- [ ] All three links were tested in a private/incognito window.
 
 ## Repository
 
@@ -33,6 +42,8 @@ Deadline: **July 19, 2026 at 23:59 IST**. Aim to submit at least two hours early
 - [ ] Exported MP4 was watched end to end.
 - [ ] Video sharing permissions allow judges to view without requesting access.
 - [ ] Video URL is copied into the submission form.
+- [ ] The pitch clearly demonstrates originality, impact, AI fluency, working execution, and creativity.
+- [ ] The video stays at or below the strict 3-minute maximum.
 
 ## Final submission
 
@@ -43,6 +54,13 @@ Deadline: **July 19, 2026 at 23:59 IST**. Aim to submit at least two hours early
 - [ ] Submission preview opened and every link tested.
 - [ ] Confirmation screenshot saved.
 - [ ] Final submission completed before 21:59 IST to preserve a two-hour buffer.
+
+## Official mandate reminders
+
+- [ ] The product solves a real problem using AI.
+- [ ] OpenAI Codex was used to build the project.
+- [ ] Prototype URL, public repository, and public demo video are submitted before July 19 at 23:59 IST.
+- [ ] Pitch deck is treated as optional, not as a blocker.
 
 ## One-line pitch
 

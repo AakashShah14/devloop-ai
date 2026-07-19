@@ -1,6 +1,6 @@
 # DevLoop AI Demo Video Guide
 
-Target length: 2 minutes 30 seconds. Record at 1080p with the browser zoom near 100%. Use Demo mode unless the deployed Gemini run has already been tested immediately before recording.
+Target length: 2 minutes 30 seconds. Record at 1080p with the browser zoom near 100%. Use the live OpenAI mode after one successful rehearsal; keep Demo mode only as an emergency fallback.
 
 ## Narration and screen flow
 
@@ -68,11 +68,15 @@ Target length: 2 minutes 30 seconds. Record at 1080p with the browser zoom near 
 
 > DevLoop AI: because the first answer is just the beginning.
 
+## Optional project-package shot
+
+For a stronger live-AI demo, enter “Set up an initial Python project with pytest, packaging, tests, and README instructions.” Show the correct Python file label, generated file count, and ZIP download. Say: “DevLoop packages the complete AI-generated project for local inspection; it does not claim the archive was executed or production-verified.” Keep the full video below three minutes.
+
 ## Recording checklist
 
 - Close personal tabs, notifications, terminals containing keys, and password managers.
 - Use the deployed URL in a clean browser window.
-- Verify the badge says **Demo mode** for the deterministic recording.
+- Verify the badge says **OpenAI live** for the primary recording.
 - Run the sample once before recording; then click **New run** so the recording starts clean.
 - Keep the pointer still while workflow stages animate.
 - Do not claim that generated code was executed or security-audited.
@@ -82,4 +86,4 @@ Target length: 2 minutes 30 seconds. Record at 1080p with the browser zoom near 
 
 ## Fallback plan
 
-If Gemini is slow, rate-limited, or returns malformed structured output, set `LLM_PROVIDER=demo`, redeploy, verify `/api/health`, and record the deterministic 58 → 76 → 91 run. Say “Demo mode” clearly; its purpose is presentation reliability, not pretending to be a live provider response.
+If OpenAI is slow, rate-limited, or returns malformed structured output, set `LLM_PROVIDER=demo`, redeploy, verify `/api/health`, and record the deterministic 58 → 76 → 91 run. Say “Demo mode” clearly; its purpose is presentation reliability, not pretending to be a live provider response.

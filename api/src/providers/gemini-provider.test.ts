@@ -58,4 +58,25 @@ describe('GeminiProvider', () => {
     ).rejects.toThrow('The model returned an invalid structured response.');
     expect(generateText).toHaveBeenCalledTimes(2);
   });
+
+  it('requests a complete project manifest for Python scaffolding', async () => {
+    const generateText = vi.fn().mockResolvedValue(
+      JSON.stringify({
+        code: 'def main(): pass',
+        language: 'python',
+        changes: ['Created project'],
+        files: [{ path: 'pyproject.toml', content: '[project]' }],
+      }),
+    );
+    const provider = new GeminiProvider({ apiKey: 'test-key', generateText });
+
+    const result = await provider.generate('Set up an initial Python project with pytest', {
+      summary: 'Create project',
+      steps: ['Add files'],
+    });
+
+    expect(result.files?.[0].path).toBe('pyproject.toml');
+    expect(generateText.mock.calls[0][0]).toContain('complete runnable project');
+    expect(generateText.mock.calls[0][0]).toContain('Python');
+  });
 });

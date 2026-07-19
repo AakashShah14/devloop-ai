@@ -24,6 +24,8 @@ const cleanJson = (text: string): string =>
     .replace(/\s*```$/, '')
     .trim();
 
+const projectManifestInstruction = `The result may include a "files" array with objects shaped {"path":"relative/path","content":"complete file content"}. Always return the array; use an empty array for a genuinely single-file request. For project setup, scaffolding, repository, or multi-file requirements, include the complete runnable project. Match the requested ecosystem: for Python include packaging or requirements, source modules, tests, .gitignore, and README instructions; for Angular include package manifest, Angular and TypeScript configuration, application source, styles, tests, and README instructions. Use normalized relative paths only. Keep "code" as the representative entry file or a concise project overview.`;
+
 const unsupportedSchemaKeywords = new Set([
   '$schema',
   'format',
@@ -42,11 +44,19 @@ const toOpenAISchema = (value: unknown): unknown => {
   if (Array.isArray(value)) return value.map(toOpenAISchema);
   if (!value || typeof value !== 'object') return value;
 
-  return Object.fromEntries(
+  const converted = Object.fromEntries(
     Object.entries(value)
       .filter(([key]) => !unsupportedSchemaKeywords.has(key))
       .map(([key, nestedValue]) => [key, toOpenAISchema(nestedValue)]),
   );
+  if (
+    converted['type'] === 'object' &&
+    converted['properties'] &&
+    typeof converted['properties'] === 'object'
+  ) {
+    converted['required'] = Object.keys(converted['properties'] as Record<string, unknown>);
+  }
+  return converted;
 };
 
 const publicMessageForStatus = (status: number): string => {
@@ -167,7 +177,7 @@ export class OpenAIProvider implements LoopProvider {
 
   generate(requirement: string, plan: PlanResult): Promise<GenerationResult> {
     return this.callStructured(
-      `You are the generation stage of DevLoop AI. Implement the requirement using the plan.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\n\nReturn complete code and a concise list of changes in the requested structure. Do not use Markdown fences inside the code string.`,
+      `You are the generation stage of DevLoop AI. Implement the requirement using the plan.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\n\nReturn complete code and a concise list of changes in the requested structure. ${projectManifestInstruction} Do not use Markdown fences inside strings.`,
       'devloop_generation',
       generationResultSchema,
     );
@@ -194,7 +204,7 @@ export class OpenAIProvider implements LoopProvider {
     nextIteration: number,
   ): Promise<GenerationResult> {
     return this.callStructured(
-      `You are the improvement stage of DevLoop AI. Produce iteration ${nextIteration} by applying every actionable review finding.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\nCurrent code:\n${code}\nReview: ${JSON.stringify(review)}\n\nReturn complete improved code and the specific applied changes in the requested structure. Do not use Markdown fences inside the code string.`,
+      `You are the improvement stage of DevLoop AI. Produce iteration ${nextIteration} by applying every actionable review finding.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\nCurrent implementation:\n${code}\nReview: ${JSON.stringify(review)}\n\nReturn complete improved code and the specific applied changes in the requested structure. ${projectManifestInstruction} For a multi-file requirement, return the complete updated manifest, not only changed files. Do not use Markdown fences inside strings.`,
       'devloop_generation',
       generationResultSchema,
     );

@@ -89,6 +89,96 @@ describe('OpenAIProvider', () => {
     });
   });
 
+  it('requests and accepts a complete Python project manifest', async () => {
+    const generateText = vi.fn().mockResolvedValue(
+      JSON.stringify({
+        code: 'def main():\n    print("hello")',
+        language: 'python',
+        changes: ['Created a runnable Python project'],
+        files: [
+          { path: 'pyproject.toml', content: '[project]\nname = "demo"' },
+          { path: 'src/demo/main.py', content: 'def main():\n    print("hello")' },
+          { path: 'README.md', content: '# Demo' },
+        ],
+      }),
+    );
+    const provider = new OpenAIProvider({ apiKey: 'test-key', generateText });
+
+    const result = await provider.generate('Set up an initial Python project with pytest', {
+      summary: 'Create the project',
+      steps: ['Add packaging, source, tests, and documentation'],
+    });
+
+    expect(result.files).toHaveLength(3);
+    expect(result.files?.[0].path).toBe('pyproject.toml');
+    const request = generateText.mock.calls[0][0] as { prompt: string; schema: object };
+    expect(request.prompt).toContain('"files" array');
+    expect(request.prompt).toContain('Python');
+    expect(request.prompt).toContain('README');
+    expect(JSON.stringify(request.schema)).toContain('files');
+  });
+
+  it('requires the files array in OpenAI strict generation schemas', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  code: 'print("hello")',
+                  language: 'python',
+                  changes: ['Created the script'],
+                  files: [],
+                }),
+              },
+            },
+          ],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const provider = new OpenAIProvider({ apiKey: 'test-key' });
+
+    await provider.generate('Create one Python script that prints hello', {
+      summary: 'Create a script',
+      steps: ['Write the script'],
+    });
+
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    const schema = body.response_format.json_schema.schema as {
+      required: string[];
+      properties: object;
+    };
+    expect(schema.required).toContain('files');
+    expect(schema.properties).toHaveProperty('files');
+  });
+
+  it('asks improvements to return the complete updated project manifest', async () => {
+    const generateText = vi.fn().mockResolvedValue(
+      JSON.stringify({
+        code: 'def main():\n    print("hello")',
+        language: 'python',
+        changes: ['Added tests'],
+        files: [{ path: 'tests/test_main.py', content: 'def test_main():\n    assert True' }],
+      }),
+    );
+    const provider = new OpenAIProvider({ apiKey: 'test-key', generateText });
+
+    await provider.improve(
+      'Set up an initial Python project with pytest',
+      { summary: 'Create the project', steps: ['Add files'] },
+      'Current project files:\npyproject.toml\n[project]',
+      { scores: completeScores, findings: ['Add tests'] },
+      2,
+    );
+
+    expect((generateText.mock.calls[0][0] as { prompt: string }).prompt).toContain(
+      'complete updated manifest',
+    );
+  });
+
   it('retries one schema-invalid successful response', async () => {
     const generateText = vi
       .fn()

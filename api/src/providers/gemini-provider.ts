@@ -19,6 +19,8 @@ const cleanJson = (text: string): string =>
     .replace(/\s*```$/, '')
     .trim();
 
+const projectManifestInstruction = `The JSON may include a "files" array with objects shaped {"path":"relative/path","content":"complete file content"}. Include the complete runnable project when the requirement asks for setup, scaffolding, a repository, or multiple files. Match the requested ecosystem: for Python include packaging or requirements, source modules, tests, .gitignore, and README instructions; for Angular include package manifest, Angular and TypeScript configuration, application source, styles, tests, and README instructions. Use normalized relative paths only. Keep "code" as the representative entry file or a concise project overview.`;
+
 export class GeminiProvider implements LoopProvider {
   readonly name = 'gemini' as const;
   private readonly generateText: GenerateText;
@@ -55,7 +57,7 @@ export class GeminiProvider implements LoopProvider {
 
   generate(requirement: string, plan: PlanResult): Promise<GenerationResult> {
     return this.callStructured(
-      `You are the generation stage of DevLoop AI. Implement the requirement using the plan.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\n\nReturn only JSON: {"code":"complete code","language":"language id","changes":["what this version added"]}. Do not use Markdown fences inside the code string.`,
+      `You are the generation stage of DevLoop AI. Implement the requirement using the plan.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\n\nReturn only JSON with code, language, changes, and files when applicable. ${projectManifestInstruction} Do not use Markdown fences inside strings.`,
       generationResultSchema,
     );
   }
@@ -80,7 +82,7 @@ export class GeminiProvider implements LoopProvider {
     nextIteration: number,
   ): Promise<GenerationResult> {
     return this.callStructured(
-      `You are the improvement stage of DevLoop AI. Produce iteration ${nextIteration} by applying every actionable review finding.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\nCurrent code:\n${code}\nReview: ${JSON.stringify(review)}\n\nReturn only JSON: {"code":"complete improved code","language":"language id","changes":["specific applied change"]}. Do not use Markdown fences inside the code string.`,
+      `You are the improvement stage of DevLoop AI. Produce iteration ${nextIteration} by applying every actionable review finding.\nRequirement: ${requirement}\nPlan: ${JSON.stringify(plan)}\nCurrent implementation:\n${code}\nReview: ${JSON.stringify(review)}\n\nReturn only JSON with code, language, changes, and files when applicable. ${projectManifestInstruction} For a multi-file requirement, return the complete updated manifest, not only changed files. Do not use Markdown fences inside strings.`,
       generationResultSchema,
     );
   }

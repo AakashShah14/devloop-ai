@@ -71,4 +71,89 @@ describe('runEngineeringLoop', () => {
       events.filter((event) => event.type === 'stage').map((event) => event.stage),
     ).toEqual(['planning', 'generating', 'reviewing', 'improving', 'reviewing', 'complete']);
   });
+
+  it('passes the complete project manifest into review and improvement stages', async () => {
+    const provider = createProvider([60, 90]);
+    vi.mocked(provider.generate).mockResolvedValue({
+      code: 'def main():\n    print("hello")',
+      language: 'python',
+      changes: ['Created the scaffold'],
+      files: [
+        { path: 'pyproject.toml', content: '[project]\nname = "demo"' },
+        { path: 'src/demo/main.py', content: 'def main():\n    print("hello")' },
+      ],
+    });
+
+    await runEngineeringLoop({
+      requirement: 'Set up an initial Python project with pytest',
+      provider,
+      emit: () => undefined,
+    });
+
+    const reviewContext = vi.mocked(provider.review).mock.calls[0][2];
+    const improveContext = vi.mocked(provider.improve).mock.calls[0][2];
+    expect(reviewContext).toContain('pyproject.toml');
+    expect(reviewContext).toContain('src/demo/main.py');
+    expect(improveContext).toContain('[project]');
+  });
+
+  it('preserves existing files when an improvement returns only changed project files', async () => {
+    const provider = createProvider([60, 90]);
+    vi.mocked(provider.generate).mockResolvedValue({
+      code: 'def main(): pass',
+      language: 'python',
+      changes: ['Created project'],
+      files: [
+        { path: 'pyproject.toml', content: '[project]\nname = "demo"' },
+        { path: 'src/demo/main.py', content: 'def main(): pass' },
+      ],
+    });
+    vi.mocked(provider.improve).mockResolvedValue({
+      code: 'def main():\n    return 1',
+      language: 'python',
+      changes: ['Improved main'],
+      files: [{ path: 'src/demo/main.py', content: 'def main():\n    return 1' }],
+    });
+
+    const result = await runEngineeringLoop({
+      requirement: 'Set up an initial Python project with pytest',
+      provider,
+      emit: () => undefined,
+    });
+
+    expect(result.iterations[1].files).toEqual([
+      { path: 'pyproject.toml', content: '[project]\nname = "demo"' },
+      { path: 'src/demo/main.py', content: 'def main():\n    return 1' },
+    ]);
+  });
+
+  it('rejects a merged project manifest that exceeds the shared file limit', async () => {
+    const provider = createProvider([60, 90]);
+    vi.mocked(provider.generate).mockResolvedValue({
+      code: 'initial',
+      language: 'python',
+      changes: ['Created project'],
+      files: Array.from({ length: 50 }, (_, index) => ({
+        path: `src/original-${index}.py`,
+        content: 'x',
+      })),
+    });
+    vi.mocked(provider.improve).mockResolvedValue({
+      code: 'improved',
+      language: 'python',
+      changes: ['Added files'],
+      files: Array.from({ length: 50 }, (_, index) => ({
+        path: `src/new-${index}.py`,
+        content: 'x',
+      })),
+    });
+
+    await expect(
+      runEngineeringLoop({
+        requirement: 'Set up an initial Python project with pytest',
+        provider,
+        emit: () => undefined,
+      }),
+    ).rejects.toThrow();
+  });
 });

@@ -78,7 +78,7 @@ export class RunStore {
         this.iterationsState.set(event.result.iterations);
         this.stageState.set('complete');
         this.messageState.set('Engineering loop complete');
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(event.result));
+        this.persist(event.result);
         break;
       case 'error':
         this.stageState.set('failed');
@@ -101,6 +101,22 @@ export class RunStore {
       this.messageState.set('Restored your latest engineering loop');
     } catch {
       localStorage.removeItem(STORAGE_KEY);
+    }
+  }
+
+  private persist(result: RunResult): void {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
+    } catch {
+      const compactResult: RunResult = {
+        ...result,
+        iterations: result.iterations.map(({ files: _files, ...iteration }) => iteration),
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(compactResult));
+      } catch {
+        // The completed run remains available in memory when browser storage is unavailable.
+      }
     }
   }
 

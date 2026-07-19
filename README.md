@@ -30,6 +30,7 @@ Requirement
 - Review findings and applied changes for every iteration
 - Copyable final code and latest-run browser persistence
 - OpenAI, Groq, and Gemini integrations with server-only API keys
+- Safe downloadable multi-file ZIPs for project-scaffolding prompts
 - Deterministic Demo mode with a reliable 58 → 76 → 91 presentation
 
 ## Tech stack
@@ -179,5 +180,6 @@ The full recording script is in [`docs/demo-video.md`](docs/demo-video.md). The 
 - API key remains server-side and `.env` files are ignored
 - Request body is limited and requirements must contain 10–2000 characters
 - Structured scores must include all six categories and values from 0–100
+- Generated project archives are not executed or compile-verified by DevLoop
 
 This narrow scope is intentional: it makes the loop easy to understand, test, deploy, and demonstrate within the hackathon deadline.

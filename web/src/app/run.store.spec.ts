@@ -100,4 +100,21 @@ describe('RunStore', () => {
     expect(restored.result()).toEqual(result);
     expect(restored.stage()).toBe('complete');
   });
+
+  it('still completes when the generated project is too large for browser storage', () => {
+    const result: RunResult = {
+      requirement: 'Set up an initial Python project with pytest',
+      provider: 'openai',
+      plan: { summary: 'Create project', steps: ['Build'] },
+      iterations: [iteration],
+      completedAt: '2026-07-19T10:00:00.000Z',
+    };
+    spyOn(Storage.prototype, 'setItem').and.throwError('QuotaExceededError');
+
+    store.start(result.requirement);
+    expect(() => events.next({ type: 'complete', result })).not.toThrow();
+
+    expect(store.stage()).toBe('complete');
+    expect(store.result()).toEqual(result);
+  });
 });

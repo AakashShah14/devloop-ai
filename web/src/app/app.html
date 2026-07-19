@@ -176,10 +176,27 @@
           <article class="code-card">
             <header>
               <div class="window-dots"><i></i><i></i><i></i></div>
-              <span>login.component.ts · v{{ selectedIteration()?.number }}</span>
+              <span>{{ previewLabel() }} · v{{ selectedIteration()?.number }}</span>
               <button type="button" (click)="copyCode()">{{ copied() ? 'Copied ✓' : 'Copy code' }}</button>
             </header>
             <pre><code>{{ selectedIteration()?.code }}</code></pre>
+            @if (selectedIteration()?.files?.length; as fileCount) {
+              <div class="project-download">
+                <div>
+                  <strong>Generated project package</strong>
+                  <span>{{ fileCount }} files · AI-generated, not executed by DevLoop</span>
+                </div>
+                <button
+                  data-testid="download-project"
+                  type="button"
+                  class="download-button"
+                  (click)="downloadProject()"
+                >Download {{ fileCount }} files as ZIP ↓</button>
+              </div>
+            }
+            @if (downloadError()) {
+              <p data-testid="download-error" class="download-error" role="alert">{{ downloadError() }}</p>
+            }
           </article>
         </div>
       </section>

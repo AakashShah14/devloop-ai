@@ -1,0 +1,160 @@
+1
+00:00:00,000 --> 00:00:04,489
+AI coding tools can produce an impressive first answer in seconds.
+
+2
+00:00:04,489 --> 00:00:08,017
+But impressive is not the same as engineered.
+
+3
+00:00:08,017 --> 00:00:13,468
+That first response may hide missed requirements, fragile error handling, weak accessibility, or code
+
+4
+00:00:13,468 --> 00:00:16,033
+that becomes difficult to maintain.
+
+5
+00:00:16,033 --> 00:00:21,485
+DevLoop AI changes the stopping point. It treats generation as the beginning of a
+
+6
+00:00:21,485 --> 00:00:23,409
+visible engineering process.
+
+7
+00:00:23,409 --> 00:00:28,860
+For every requirement, DevLoop plans the approach, generates a solution, reviews it, scores it,
+
+8
+00:00:28,860 --> 00:00:31,425
+and improves it when needed.
+
+9
+00:00:31,425 --> 00:00:36,877
+The application owns this loop. It stops when quality reaches eighty-five, or after a
+
+10
+00:00:36,877 --> 00:00:39,763
+hard maximum of three reviewed iterations.
+
+11
+00:00:39,763 --> 00:00:43,611
+Here is the deployed product running with OpenAI live.
+
+12
+00:00:43,611 --> 00:00:49,062
+I am asking for a minimal Python project with packaging, source code, tests, Git
+
+13
+00:00:49,062 --> 00:00:51,627
+ignore rules, and setup instructions.
+
+14
+00:00:51,627 --> 00:00:57,079
+The interface exposes each stage as it happens: planning, generating, reviewing, and, when required,
+
+15
+00:00:57,079 --> 00:00:59,003
+improving the result.
+
+16
+00:00:59,003 --> 00:01:04,454
+The backend makes separate structured calls, validates every response, and streams progress to the
+
+17
+00:01:04,454 --> 00:01:07,019
+Angular interface with server-sent events.
+
+18
+00:01:07,019 --> 00:01:12,471
+This live result received an overall quality score of ninety-four on its first reviewed
+
+19
+00:01:12,471 --> 00:01:13,753
+version.
+
+20
+00:01:13,753 --> 00:01:18,243
+Because it already cleared the threshold, DevLoop stopped after iteration one.
+
+21
+00:01:18,243 --> 00:01:22,411
+Stopping early here is expected behavior, not a missing loop.
+
+22
+00:01:22,411 --> 00:01:27,542
+The result is scored across correctness, maintainability, security, accessibility, performance, and requirement coverage.
+
+23
+00:01:27,542 --> 00:01:32,993
+Judges can inspect the plan, review findings, applied changes, generated output, and the exact
+
+24
+00:01:32,993 --> 00:01:36,841
+stop condition instead of seeing only a final answer.
+
+25
+00:01:36,841 --> 00:01:42,293
+The preview is correctly labelled Python, rather than displaying a fixed filename from another
+
+26
+00:01:42,293 --> 00:01:43,575
+framework.
+
+27
+00:01:43,575 --> 00:01:47,744
+For project-scaffolding prompts, DevLoop also returns a structured file manifest.
+
+28
+00:01:47,744 --> 00:01:50,951
+This run produced six complete project files.
+
+29
+00:01:50,951 --> 00:01:56,402
+The package can be downloaded as a ZIP for local inspection, while nested paths
+
+30
+00:01:56,402 --> 00:01:59,929
+and unsafe filenames are validated before archive creation.
+
+31
+00:01:59,929 --> 00:02:05,381
+The architecture stays intentionally focused: Angular for the experience, Express and TypeScript for orchestration,
+
+32
+00:02:05,381 --> 00:02:08,587
+and OpenAI Structured Outputs for model responses.
+
+33
+00:02:08,587 --> 00:02:14,039
+API keys remain on the server. Zod validates the model data, and the application—not
+
+34
+00:02:14,039 --> 00:02:16,604
+the model—controls the iteration limit.
+
+35
+00:02:16,604 --> 00:02:22,055
+Quality scores are structured model evaluations. DevLoop does not execute, compile, or security-audit generated
+
+36
+00:02:22,055 --> 00:02:23,338
+code.
+
+37
+00:02:23,338 --> 00:02:28,789
+That honest boundary keeps the project practical while making AI improvement transparent, measurable, and
+
+38
+00:02:28,789 --> 00:02:30,713
+easy to demonstrate.
+
+39
+00:02:30,713 --> 00:02:36,165
+DevLoop AI. Better first drafts come from visible engineering, because the first answer is
+
+40
+00:02:36,165 --> 00:02:38,089
+just the beginning.
+

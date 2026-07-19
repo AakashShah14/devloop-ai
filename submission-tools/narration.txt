@@ -1,0 +1,39 @@
+AI coding tools can produce an impressive first answer in seconds. But impressive is not the same as engineered.
+
+That first response may hide missed requirements, fragile error handling, weak accessibility, or code that becomes difficult to maintain.
+
+DevLoop AI changes the stopping point. It treats generation as the beginning of a visible engineering process.
+
+For every requirement, DevLoop plans the approach, generates a solution, reviews it, scores it, and improves it when needed.
+
+The application owns this loop. It stops when quality reaches eighty-five, or after a hard maximum of three reviewed iterations.
+
+Here is the deployed product running with OpenAI live. I am asking for a minimal Python project with packaging, source code, tests, Git ignore rules, and setup instructions.
+
+The interface exposes each stage as it happens: planning, generating, reviewing, and, when required, improving the result.
+
+The backend makes separate structured calls, validates every response, and streams progress to the Angular interface with server-sent events.
+
+This live result received an overall quality score of ninety-four on its first reviewed version.
+
+Because it already cleared the threshold, DevLoop stopped after iteration one. Stopping early here is expected behavior, not a missing loop.
+
+The result is scored across correctness, maintainability, security, accessibility, performance, and requirement coverage.
+
+Judges can inspect the plan, review findings, applied changes, generated output, and the exact stop condition instead of seeing only a final answer.
+
+The preview is correctly labelled Python, rather than displaying a fixed filename from another framework.
+
+For project-scaffolding prompts, DevLoop also returns a structured file manifest. This run produced six complete project files.
+
+The package can be downloaded as a ZIP for local inspection, while nested paths and unsafe filenames are validated before archive creation.
+
+The architecture stays intentionally focused: Angular for the experience, Express and TypeScript for orchestration, and OpenAI Structured Outputs for model responses.
+
+API keys remain on the server. Zod validates the model data, and the application—not the model—controls the iteration limit.
+
+Quality scores are structured model evaluations. DevLoop does not execute, compile, or security-audit generated code.
+
+That honest boundary keeps the project practical while making AI improvement transparent, measurable, and easy to demonstrate.
+
+DevLoop AI. Better first drafts come from visible engineering, because the first answer is just the beginning.
